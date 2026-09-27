@@ -1,0 +1,152 @@
+# ---------------------------------------------------------
+# PERSONAL STOCK INVESTMENT TRACKER
+# Python Internship Project
+# ---------------------------------------------------------
+
+# Hardcoded stock prices
+STOCK_PRICES = {
+    "AAPL": 180,
+    "TSLA": 250,
+    "MSFT": 420,
+    "AMZN": 190,
+    "GOOGL": 175,
+    "META": 520,
+    "NFLX": 680,
+    "NVDA": 120
+}
+
+
+def display_stocks():
+    """Display available stocks and their prices."""
+
+    print("\n==============================================")
+    print("          AVAILABLE STOCKS")
+    print("==============================================")
+
+    for stock, price in STOCK_PRICES.items():
+        print(f"{stock:<8} : ${price}")
+
+    print("==============================================")
+
+
+def calculate_investment(stock, quantity):
+    """Calculate investment value for a stock."""
+
+    return STOCK_PRICES[stock] * quantity
+
+
+def save_report(portfolio, total):
+    """Save portfolio details into a text file."""
+
+    with open("investment_report.txt", "w") as file:
+
+        file.write("==============================================\n")
+        file.write("        PERSONAL STOCK INVESTMENT REPORT\n")
+        file.write("==============================================\n\n")
+
+        for item in portfolio:
+            file.write(
+                f"Stock: {item['stock']}\n"
+                f"Price: ${item['price']}\n"
+                f"Quantity: {item['quantity']}\n"
+                f"Investment: ${item['value']:.2f}\n"
+            )
+
+            file.write("----------------------------------------------\n")
+
+        file.write(f"\nTOTAL INVESTMENT: ${total:.2f}\n")
+        file.write("==============================================\n")
+
+    print("\nReport saved successfully!")
+    print("File name: investment_report.txt")
+
+
+def main():
+
+    portfolio = []
+    total_investment = 0
+
+    print("\n==============================================")
+    print("       PERSONAL STOCK INVESTMENT TRACKER")
+    print("==============================================")
+
+    display_stocks()
+
+    while True:
+
+        stock = input(
+            "\nEnter stock symbol (or type 'done' to finish): "
+        ).upper().strip()
+
+        if stock == "DONE":
+            break
+
+        if stock not in STOCK_PRICES:
+            print("Invalid stock symbol. Please choose from the list.")
+            continue
+
+        try:
+            quantity = int(
+                input(f"Enter quantity of {stock}: ")
+            )
+
+            if quantity <= 0:
+                print("Quantity must be greater than zero.")
+                continue
+
+        except ValueError:
+            print("Please enter a valid whole number.")
+            continue
+
+        price = STOCK_PRICES[stock]
+        investment = calculate_investment(stock, quantity)
+
+        portfolio.append({
+            "stock": stock,
+            "price": price,
+            "quantity": quantity,
+            "value": investment
+        })
+
+        total_investment += investment
+
+        print(
+            f"Added {quantity} share(s) of {stock} "
+            f"= ${investment:.2f}"
+        )
+
+    # Display final portfolio
+    print("\n==============================================")
+    print("             PORTFOLIO SUMMARY")
+    print("==============================================")
+
+    if not portfolio:
+        print("No stocks were added.")
+        return
+
+    for item in portfolio:
+        print(
+            f"{item['stock']} | "
+            f"Price: ${item['price']} | "
+            f"Quantity: {item['quantity']} | "
+            f"Value: ${item['value']:.2f}"
+        )
+
+    print("----------------------------------------------")
+    print(f"TOTAL INVESTMENT: ${total_investment:.2f}")
+    print("==============================================")
+
+    # Save report
+    choice = input(
+        "\nDo you want to save the report? (yes/no): "
+    ).lower().strip()
+
+    if choice == "yes":
+        save_report(portfolio, total_investment)
+
+    print("\nThank you for using Stock Investment Tracker!")
+
+
+# Start program
+if __name__ == "__main__":
+    main()
